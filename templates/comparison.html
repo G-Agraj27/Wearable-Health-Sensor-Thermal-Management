@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Performance Comparison</h2>
+    <p>Comprehensive analysis between Existing (Asynchronous) and Proposed (Cloud Coordinated ZigBee) Protocols.</p>
+
+    <div class="grid-cols-2">
+        <div style="height: 350px;">
+            <h3>Power Consumption (mW)</h3>
+            <canvas id="powerCompareChart"></canvas>
+        </div>
+        <div style="height: 350px;">
+            <h3>End-to-End Delay (ms)</h3>
+            <canvas id="delayCompareChart"></canvas>
+        </div>
+    </div>
+
+    <div class="grid-cols-2" style="margin-top: 2rem;">
+        <div style="height: 350px;">
+            <h3>Energy Efficiency (mJ)</h3>
+            <canvas id="energyCompareChart"></canvas>
+        </div>
+        <div style="height: 350px;">
+            <h3>Success Rate (%)</h3>
+            <canvas id="successCompareChart"></canvas>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+        <h3>Detailed Comparison Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Experiment</th>
+                    <th>Metric</th>
+                    <th>Existing</th>
+                    <th>Proposed</th>
+                    <th>Improvement</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td rowspan="4">Exp {{ loop.index }}<br><small>{{ record.source }} → {{ record.target }}</small></td>
+                    <td>Power (mW)</td>
+                    <td>{{ record.existing_metrics.power }}</td>
+                    <td style="color: #2ecc71; font-weight: bold;">{{ record.proposed_metrics.power }}</td>
+                    <td>{{ ((record.existing_metrics.power - record.proposed_metrics.power) / record.existing_metrics.power * 100) | round(1) if record.existing_metrics.power > 0 else 0 }}%</td>
+                </tr>
+                <tr>
+                    <td>Delay (ms)</td>
+                    <td>{{ record.existing_metrics.delay }}</td>
+                    <td style="color: #2ecc71; font-weight: bold;">{{ record.proposed_metrics.delay }}</td>
+                    <td>{{ ((record.existing_metrics.delay - record.proposed_metrics.delay) / record.existing_metrics.delay * 100) | round(1) if record.existing_metrics.delay > 0 else 0 }}%</td>
+                </tr>
+                <tr>
+                    <td>Energy (mJ)</td>
+                    <td>{{ record.existing_metrics.energy }}</td>
+                    <td style="color: #2ecc71; font-weight: bold;">{{ record.proposed_metrics.energy }}</td>
+                    <td>{{ ((record.existing_metrics.energy - record.proposed_metrics.energy) / record.existing_metrics.energy * 100) | round(1) if record.existing_metrics.energy > 0 else 0 }}%</td>
+                </tr>
+                <tr>
+                    <td>Success Rate</td>
+                    <td>{{ record.existing_metrics.success }}%</td>
+                    <td style="color: #2ecc71; font-weight: bold;">{{ record.proposed_metrics.success }}%</td>
+                    <td>+{{ (record.proposed_metrics.success - record.existing_metrics.success) | round(1) }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const records = {{ records | tojson }};
+    const labels = records.map((_, i) => `Exp ${i+1}`);
+
+    const createChart = (id, label, existingData, proposedData, color1, color2) => {
+        new Chart(document.getElementById(id), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Existing', data: existingData, backgroundColor: color1 },
+                    { label: 'Proposed', data: proposedData, backgroundColor: color2 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    };
+
+    createChart('powerCompareChart', 'Power', 
+        records.map(r => r.existing_metrics.power), 
+        records.map(r => r.proposed_metrics.power), 
+        '#e74c3c', '#2ecc71');
+
+    createChart('delayCompareChart', 'Delay', 
+        records.map(r => r.existing_metrics.delay), 
+        records.map(r => r.proposed_metrics.delay), 
+        '#e74c3c', '#2ecc71');
+
+    createChart('energyCompareChart', 'Energy', 
+        records.map(r => r.existing_metrics.energy), 
+        records.map(r => r.proposed_metrics.energy), 
+        '#e74c3c', '#2ecc71');
+
+    createChart('successCompareChart', 'Success Rate', 
+        records.map(r => r.existing_metrics.success), 
+        records.map(r => r.proposed_metrics.success), 
+        '#e74c3c', '#2ecc71');
+</script>
+{% endblock %}

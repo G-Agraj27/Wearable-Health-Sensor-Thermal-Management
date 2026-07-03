@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Medical Data Security Protocol</h2>
+    <p>Secure transmission of sensitive medical sensor data using Cloud Coordination.</p>
+
+    <div class="container" style="margin-top: 2rem;">
+        <h3>Secure Transmission Visualization</h3>
+        <p>Simulation of encrypted medical message transmission through secure routing path.</p>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <button onclick="startSecureTransmission()" id="btnTransmit" disabled>Start Secure Transmission</button>
+            <span id="transStatus" style="align-self: center; font-weight: bold; color: var(--secondary-color);">Generate network in Simulation page first</span>
+        </div>
+        <canvas id="securityCanvas" width="1100" height="500" style="border: 1px solid #ddd; background: #fdfdfd;"></canvas>
+    </div>
+
+    <div class="grid-cols-2">
+        <div class="container" style="box-shadow: none; border: 1px solid #ddd;">
+            <h3>Encryption (Sender Node)</h3>
+            <div class="form-group">
+                <label>Medical Message / Data:</label>
+                <textarea id="plainText" rows="4" style="width: 100%;">Heart Rate: 72 BPM, SpO2: 98%</textarea>
+            </div>
+            <button onclick="encrypt()">Encrypt Data</button>
+            <div style="margin-top: 1rem;">
+                <strong>Encrypted Output:</strong>
+                <pre id="encryptedOutput" style="background: #eee; padding: 1rem;"></pre>
+            </div>
+        </div>
+
+        <div class="container" style="box-shadow: none; border: 1px solid #ddd;">
+            <h3>Decryption (Cloud/Receiver)</h3>
+            <div class="form-group">
+                <label>Received Encrypted Data:</label>
+                <textarea id="cipherText" rows="4" style="width: 100%;"></textarea>
+            </div>
+            <button onclick="decrypt()">Decrypt Data</button>
+            <div style="margin-top: 1rem;">
+                <strong>Decrypted Original Message:</strong>
+                <pre id="decryptedOutput" style="background: #eee; padding: 1rem; color: #2ecc71; font-weight: bold;"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function encrypt() {
+        const text = document.getElementById('plainText').value;
+        const res = await fetch('/api/security/encrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: text})
+        });
+        const data = await res.json();
+        document.getElementById('encryptedOutput').innerText = data.encrypted;
+        document.getElementById('cipherText').value = data.encrypted;
+    }
+
+    async function decrypt() {
+        const text = document.getElementById('cipherText').value;
+        const res = await fetch('/api/security/decrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({encrypted: text})
+        });
+        const data = await res.json();
+        document.getElementById('decryptedOutput').innerText = data.decrypted;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Wearable Health Sensor Thermal Management Platform 
+using Adaptive Body Area Networking </h1>
+    <p>Low Power Health Sensors Optimization</p>
+</div>
+
+<div class="grid-cols-2">
+    <div class="container">
+        <h2>Existing Routing Protocol</h2>
+        <h3>Asynchronous Data Transfer Routing</h3>
+        <p>This protocol utilizes a standard NetworkX based routing approach that focuses on connectivity but lacks energy awareness. It often results in:</p>
+        <ul>
+            <li>Higher power consumption</li>
+            <li>Unbalanced energy usage leading to voids</li>
+            <li>Increased recovery delays</li>
+        </ul>
+        <div style="text-align: center; margin-top: 2rem;">
+            <div style="width: 100px; height: 100px; background: #e74c3c; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                High Power
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Proposed Routing Protocol</h2>
+        <h3>Cloud Coordinated ZigBee</h3>
+        <p>Our novel approach integrates cloud coordination with ZigBee sleep scheduling to optimize:</p>
+        <ul>
+            <li>Power efficiency via sleep scheduling</li>
+            <li>Energy void handling success rate</li>
+            <li>Reduced rerouting overhead</li>
+            <li>Minimal recovery delay</li>
+        </ul>
+        <div style="text-align: center; margin-top: 2rem;">
+            <div style="width: 100px; height: 100px; background: #2ecc71; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                Low Power
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Algorithm Details</h2>
+    <p>The system uses a Cloud Coordinated approach where the central controller (Cloud) maintains the global state of the network (managed via NetworkX graphs in the backend). It calculates optimal paths using a custom weighted metric that combines distance and residual energy.</p>
+    <p><strong>Path Finding:</strong> <code>nx.astar_path(G, current_id, target_ch_id, weight='energy_cost')</code></p>
+</div>
+{% endblock %}

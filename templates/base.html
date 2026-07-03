@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wearable Health Sensor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- FontAwesome for symbols -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js for innovative figures -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Home</a></li>
+                <li><a href="/simulation" class="{{ 'active' if request.path == '/simulation' else '' }}">Simulation</a></li>
+                <li><a href="/comparison" class="{{ 'active' if request.path == '/comparison' else '' }}">Comparison</a></li>
+                <li><a href="/existing" class="{{ 'active' if request.path == '/existing' else '' }}">Existing Protocol</a></li>
+                <li><a href="/proposed" class="{{ 'active' if request.path == '/proposed' else '' }}">Proposed Protocol</a></li>
+                <li><a href="/security" class="{{ 'active' if request.path == '/security' else '' }}">Security</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

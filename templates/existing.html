@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Existing Protocol Performance Analysis</h2>
+    <p>Asynchronous Data Transfer Routing (Standard NetworkX Shortest Path)</p>
+    
+    <div class="grid-cols-2">
+        <div style="height: 300px;">
+            <canvas id="powerChart"></canvas>
+        </div>
+        <div style="height: 300px;">
+            <canvas id="delayChart"></canvas>
+        </div>
+    </div>
+
+    <h3>Historical Data Log</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Source -> Target</th>
+                <th>Power (mW)</th>
+                <th>Energy (mJ)</th>
+                <th>Delay (ms)</th>
+                <th>Overhead</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.source }} -> {{ record.target }}</td>
+                <td>{{ record.existing_metrics.power }}</td>
+                <td>{{ record.existing_metrics.energy }}</td>
+                <td>{{ record.existing_metrics.delay }}</td>
+                <td>{{ record.existing_metrics.overhead }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const records = {{ records | tojson }};
+    const labels = records.map((_, i) => `Exp ${i+1}`);
+    const powerData = records.map(r => r.existing_metrics.power);
+    const delayData = records.map(r => r.existing_metrics.delay);
+
+    new Chart(document.getElementById('powerChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Power Consumption (mW)',
+                data: powerData,
+                borderColor: '#e74c3c',
+                tension: 0.1
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('delayChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'End-to-End Delay (ms)',
+                data: delayData,
+                backgroundColor: '#e74c3c'
+            }]
+        }
+    });
+</script>
+{% endblock %}
